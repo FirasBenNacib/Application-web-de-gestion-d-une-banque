@@ -1,0 +1,178 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" style="color:white;">Agence Manager</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarColor02">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" (click)="onOpenModal(null, 'add')">Add Agence <span class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input type="search" (ngModelChange)="searchAgences(key.value)" #key="ngModel" ngModel
+             name="key" id="searchName" class="form-control mr-sm-2" placeholder="Search agences..." required>
+    </form>
+  </div>
+</nav>
+<div class="container" id="main-container">
+  <!--  <div class="row">
+     <div *ngFor="let agence of agences" class="col-md-6 col-xl-3">
+       <div class="card m-b-30">
+         <div class="card-body row">
+           <div class="col-6">
+           </div>
+           <div class="col-6 card-title align-self-center mb-0">
+             <h5>{{agence?.nom}}</h5>
+             <p class="m-0">{{agence?.description}}</p>
+           </div>
+         </div>
+
+         <div class="card-body">
+           <div class="float-right btn-group btn-group-sm">
+             <a (click)="onOpenModal(agence, 'edit')" class="btn btn-primary tooltips" data-placement="top" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
+             <a (click)="onOpenModal(agence, 'delete')" class="btn btn-secondary tooltips" data-placement="top" data-original-title="Delete"><i class="fa fa-times"></i></a>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>-->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-wrap">
+        <table class="table">
+          <thead class="thead-primary">
+          <tr>
+
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Montant</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let agence of agences">
+
+            <td>{{agence?.id}}</td>
+            <td>{{agence?.nom}}</td>
+            <td>{{agence?.description}}</td>
+            <td></td>
+            <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
+                        (click)="onUpdateAgence(agence)">Edit</button></td>
+            <td><button type="button" class="btn btn-danger" (click)="onDeleteAgence(agenceId)">Delete</button></td>
+          </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+   <!-- Add Agence Modal -->
+  <!-- <div class="modal fade" id="addAgenceModal" tabindex="-1" role="dialog" aria-labelledby="addAgenceModalLabel" aria-hidden="true">
+     <div class="modal-dialog" role="document">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h5 class="modal-title" id="addAgenceModalLabel">Add Agence</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <form #addForm="ngForm" (ngSubmit)="onAddAgence(addForm)">
+             <div class="form-group">
+               <label for="nom">Nom</label>
+               <input type="text" ngModel name="nom" class="form-control" id="nom1" placeholder="Nom" required>
+             </div>
+             <div class="form-group">
+               <label for="description">description</label>
+               <input type="description" ngModel name="description" class="form-control" id="description1" placeholder="Description" required>
+             </div>
+             <div class="modal-footer">
+               <button type="button" id="add-agence-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+               <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary" >Save changes</button>
+             </div>
+           </form>
+         </div>
+       </div>
+     </div>
+   </div>-->
+  <div class="card mt-5" style="padding: 20px;">
+    <form #registerForm="ngForm" (ngSubmit)="register(registerForm)">
+      <div class="form-group">
+        <label for="nom">Agence nom :</label>
+        <input type="text" #nom (ngModelCha)="nom" name="nom" id="nom" class="form-control" placeholder="Agence Nom">
+      </div>
+      <div class="form-group">
+        <label for="description">Agence Description :</label>
+        <input type="text" #description (ngModel)="description" name="description" id="description" class="form-control"
+               placeholder="Agence description">
+      </div>
+
+      <div class="form-group">
+        <input type="submit" value="Register" class="btn btn-primary w-100">
+      </div>
+    </form>
+  </div>
+
+
+   <!-- Edit Modal -->
+  <div class="modal fade" id="updateAgenceModal" tabindex="-1" role="dialog" aria-labelledby="agenceEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateAgenceModalLabel">Edit Agence {{editAgence?.nom}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form #editForm="ngForm">
+            <div class="form-group">
+              <label for="nom">Nom</label>
+              <input type="text" ngModel="{{editAgence?.nom}}" name="nom" class="form-control" id="nom" aria-describedby="emailHelp" placeholder="Nom">
+            </div>
+            <input type="hidden" ngModel="{{editAgence?.id}}" name="id" class="form-control" id="id" placeholder="Email">
+            <input type="hidden" ngModel="{{editAgence?.description}}" name="description" class="form-control" id="description" placeholder="Description">
+
+            <div class="modal-footer">
+              <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+              <button (click)="onUpdateAgence(editForm.value)" data-dismiss="modal" class="btn btn-primary" >Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="deleteAgenceModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModelLabel">Delete Agence</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete agence {{deleteAgence?.nom}}?</p>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            <button (click)="onDeleteAgence(deleteAgence?.id)" class="btn btn-danger" data-dismiss="modal">Yes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notification for no employees -->
+<div *ngIf="agences?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+  <div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">NO Agences!</h4>
+    <p>No Agences were found.</p>
+  </div>
+</div>

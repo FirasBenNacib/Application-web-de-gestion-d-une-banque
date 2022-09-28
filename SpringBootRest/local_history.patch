@@ -1,0 +1,96 @@
+Index: src/main/java/com/axeane/services/NumerocomptesService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/axeane/services/NumerocomptesService.java b/src/main/java/com/axeane/services/NumerocomptesService.java
+--- a/src/main/java/com/axeane/services/NumerocomptesService.java	
++++ b/src/main/java/com/axeane/services/NumerocomptesService.java	(date 1661018665766)
+@@ -8,6 +8,11 @@
+     List<Numerocompte> getListNumerocomptes();
+ 
+     Numerocompte findNumerocomptedById(Long searchedId);
++
++    void deleteNumerocompted(Long id);
++
++    void updateNumerocompte(Numerocompte numerocompted);
++
+     void soldefinal (List<Numerocompte> l );
+ 
+ }
+Index: src/main/java/com/axeane/services/NumerocomptesServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/axeane/services/NumerocomptesServiceImpl.java b/src/main/java/com/axeane/services/NumerocomptesServiceImpl.java
+--- a/src/main/java/com/axeane/services/NumerocomptesServiceImpl.java	
++++ b/src/main/java/com/axeane/services/NumerocomptesServiceImpl.java	(date 1661018665759)
+@@ -36,9 +36,27 @@
+                 .orElse(null);
+     }
+ 
++    @Override
++    public void deleteNumerocompted(Long id) {
++        Numerocompte numerocompte = findNumerocomptedById(id);
++        numerocomptess.remove(numerocompte);
++    }
++
++    @Override
++    public void updateNumerocompte(Numerocompte numerocompte) {
++        Numerocompte numerocompte1 = findNumerocomptedById(numerocompte.getId());
++        if (numerocompte1 != null) {
++            numerocompte1.setLibellé(numerocompte.getLibellé());
++            numerocompte1.setMontant(numerocompte.getMontant());
++            numerocompte1.setDate_operation(numerocompte.getDate_operation());
++        }
++    }
++
++
++
+     @Override
+     public void soldefinal(List<Numerocompte> l) {
+-
++        
+     }
+ 
+ }
+Index: src/main/java/com/axeane/controllers/NumerocomptesController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/axeane/controllers/NumerocomptesController.java b/src/main/java/com/axeane/controllers/NumerocomptesController.java
+--- a/src/main/java/com/axeane/controllers/NumerocomptesController.java	
++++ b/src/main/java/com/axeane/controllers/NumerocomptesController.java	(date 1661018665745)
+@@ -38,6 +38,30 @@
+         }
+         return new ResponseEntity(HttpStatus.NOT_FOUND);
+     }
++
++    @PutMapping
++    public ResponseEntity updateNumerocomptes(@RequestBody Numerocompte numerocompte) {
++        if (numerocomptesService.findNumerocomptedById(numerocompte.getId()) != null) {
++            numerocomptesService.updateNumerocompte(numerocompte);
++            return new ResponseEntity<>(numerocompte, HttpStatus.OK);
++        }
++        return new ResponseEntity(HttpStatus.NOT_FOUND);
++
++    }
++
++
++    @DeleteMapping("/{id}")
++    public ResponseEntity deleteNumerocomptes(@PathVariable("id") Long id) {
++        Numerocompte numerocompte = numerocomptesService.findNumerocomptedById(id);
++        if (numerocompte != null) {
++            numerocomptesService.deleteNumerocompted(id);
++            return new ResponseEntity(HttpStatus.OK);
++        }
++        return new ResponseEntity(HttpStatus.NOT_FOUND);
++    }
++
++
++
+     @RequestMapping("/solde")
+     public String index() {
+         return "votre solde est";
